@@ -1,77 +1,76 @@
-from collections import deque
+def create_adjacency_list(Matrix):
+    AdjList = {}
 
-# Function to perform Breadth-First Search
-def bfs(start, graph, rows, cols):
-    queue = deque()
-    queue.append(start)
-    visited = set()
-    parent = {}
+    # Define directions and their corresponding changes in row and column indices
+    directions = {
+        "N": (-1, 0), "S": (1, 0),
+        "E": (0, 1), "W": (0, -1),
+        "NE": (-1, 1), "NW": (-1, -1),
+        "SE": (1, 1), "SW": (1, -1),
+        "O": (0, 0)  # Not sure what "O" represents, assuming no movement
+    }
 
-    while queue:
-        current = queue.popleft()
-        if current == (rows - 1, cols - 1):  # Reached the bull's-eye
-            return construct_path(parent, current)
+    rows, cols = len(Matrix), len(Matrix[0])
 
-        visited.add(current)
-        neighbors = graph[current]
-        for neighbor in neighbors:
-            if neighbor not in visited:
-                queue.append(neighbor)
-                parent[neighbor] = current
+    for row in range(rows):
+        for col in range(cols):
+            #AdjList[Matrix[row][col].index] = []
+            AdjList[Matrix[row][col]] = []
+            current_direction = Matrix[row][col].direction
+            current_color = Matrix[row][col].color
 
-# Function to construct the path
-def construct_path(parent, end):
-    path = []
-    while end:
-        prev = parent[end]
-        direction = get_direction(prev, end)
-        path.append(direction)
-        end = prev
-    return path[::-1]
+            if current_direction == "O":
+                #AdjList[Matrix[row][col].index].append(-1)
+                AdjList[Matrix[row][col]].append(-1)
+                continue
 
-# Function to determine direction between two nodes
-def get_direction(start, end):
-    directions = [(0, 1, 'E'), (0, -1, 'W'), (1, 0, 'S'), (-1, 0, 'N'),
-                  (-1, -1, 'NW'), (-1, 1, 'NE'), (1, -1, 'SW'), (1, 1, 'SE')]
+            dx, dy = directions[current_direction]
 
-    for dx, dy, direction in directions:
-        if (start[0] + dx, start[1] + dy) == end:
-            return str(direction)
+            k, l = row + dx, col + dy
+            while 0 <= k < rows and 0 <= l < cols:
+                if Matrix[k][l].color != current_color:
+                    #AdjList[Matrix[row][col].index].append(Matrix[k][l].index)
+                    AdjList[Matrix[row][col]].append(Matrix[k][l])
+                k += dx
+                l += dy
 
-# Read input from file
-with open('tiny.txt', 'r') as file:
-    rows, cols = map(int, file.readline().split())
-    maze = [file.readline().strip().split() for _ in range(rows)]
+    return AdjList
 
-# Create graph
-graph = {}
-for i in range(rows):
-    for j in range(cols):
-        if maze[i][j] != 'O':
-            neighbors = []
-            directions = {'N': (-1, 0), 'E': (0, 1), 'S': (1, 0), 'W': (0, -1),
-                          'NE': (-1, 1), 'SE': (1, 1), 'SW': (1, -1), 'NW': (-1, -1)}
 
-            row, col = i, j
-            color, direction = maze[i][j].split('-')
-            while True:
-                dx, dy = directions[direction]
-                row, col = row + dx, col + dy
+def read_file_and_create_2d_array(file_path):
+    with open(file_path, 'r') as file:
+        n, m = map(int, file.readline().strip().split())
+        two_d_array = []
+        index = 0
+        for _ in range(n):
+            row_data = file.readline().strip().split()
+            for i in range(m):
+                row_data[i] = Arrow(row_data[i], index)
+                index += 1
+            two_d_array.append(row_data)
+    return two_d_array
 
-                if 0 <= row < rows and 0 <= col < cols:
-                    if maze[row][col].startswith(('R', 'B')):
-                        neighbors.append((row, col))
-                    else:
-                        break
-                else:
-                    break
 
-            graph[(i, j)] = neighbors
+class Arrow:
+    def __init__(self, input_string, ind):
+        self.input_string = input_string
+        self.color, self.direction = self.parse_input_string()
+        self.visited = False
+        self.index = ind
 
-# Find path using BFS
-start = (0, 0)
-path = bfs(start, graph, rows, cols)
+    def parse_input_string(self):
+        parts = self.input_string.split("-")
+        if len(parts) == 2:
+            color = parts[0]
+            direction = parts[1]
+        else:
+            color = None
+            direction = parts[0]
+        return color, direction
 
-# Write output to file
-with open('output.txt', 'w') as output_file:
-    output_file.write(' '.join(path))
+file_path = 'tiny.txt'
+Matrix = read_file_and_create_2d_array(file_path)
+AdjList = create_adjacency_list(Matrix)
+print(AdjList)
+
+

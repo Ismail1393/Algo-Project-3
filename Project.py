@@ -22,9 +22,6 @@ class Arrow:
         #if node has been visited
         self.visited = False
 
-        #nodes distance to next move
-        self.distance = None
-
         #index of that node
         self.index = ind
 
@@ -56,34 +53,47 @@ for row in range(len(Matrix)):
         #create a key for every node
         AdjList[Matrix[row][col].index]  = []
         
+        if Matrix[row][col].direction == "O":
+            AdjList[Matrix[row][col].index].append(-1)
+
     
         if Matrix[row][col].direction == "S":
             k = row + 1 
             while k < len(Matrix):
+                #if Matrix[k][col].direction =='O':
+                 #   AdjList[Matrix[k][col].index].append(-1)
                 if Matrix[k][col].color is not Matrix[row][col].color:
                     AdjList[Matrix[row][col].index].append(Matrix[k][col].index)           
                 k += 1
         if Matrix[row][col].direction == "N":
             k = row - 1 
             while k >= 0:
+                #if Matrix[k][col].direction =='O':
+                #    AdjList[Matrix[k][col].index].append(-1)
                 if Matrix[k][col].color is not Matrix[row][col].color:
                     AdjList[Matrix[row][col].index].append(Matrix[k][col].index)
                 k -= 1
         if Matrix[row][col].direction == "E":
             k = col + 1 
             while k < len(Matrix[0]):
+               # if Matrix[row][k].direction =='O':
+                #    AdjList[Matrix[row][k].index].append(-1)
                 if Matrix[row][k].color is not Matrix[row][col].color:
                     AdjList[Matrix[row][col].index].append(Matrix[row][k].index)
                 k += 1
         if Matrix[row][col].direction == "W":
             k = col - 1 
             while k >= 0:
+               # if Matrix[row][k].direction =='O':
+                #    AdjList[Matrix[row][k].index].append(-1)
                 if Matrix[row][k].color is not Matrix[row][col].color:
                     AdjList[Matrix[row][col].index].append(Matrix[row][k].index)
                 k -= 1
         if Matrix[row][col].direction == "NE":
             k, l = row -1, col + 1  
             while k >= 0 and l < len(Matrix[0]):
+               # if Matrix[k][l].direction =='O':
+                #    AdjList[Matrix[k][l].index].append(-1)
                 if Matrix[k][l].color is not Matrix[row][col].color:
                     AdjList[Matrix[row][col].index].append(Matrix[k][l].index)
                 k -= 1
@@ -91,6 +101,8 @@ for row in range(len(Matrix)):
         if Matrix[row][col].direction == "NW":
             k, l = row - 1, col - 1  
             while k >= 0 and l >= 0:
+               # if Matrix[k][l].direction =='O':
+                #    AdjList[Matrix[k][l].index].append(-1)
                 if Matrix[k][l].color is not Matrix[row][col].color:
                     AdjList[Matrix[row][col].index].append(Matrix[k][l].index)
                 k -= 1
@@ -98,6 +110,8 @@ for row in range(len(Matrix)):
         if Matrix[row][col].direction == "SW":
             k, l = row + 1, col - 1  
             while k >= len(Matrix) and l >= 0:
+               # if Matrix[k][l].direction =='O':
+                #    AdjList[Matrix[k][l].index].append(-1)
                 if Matrix[k][l].color is not Matrix[row][col].color:
                     AdjList[Matrix[row][col].index].append(Matrix[k][l].index)
                 k += 1
@@ -105,16 +119,10 @@ for row in range(len(Matrix)):
         if Matrix[row][col].direction == "SE":
             k, l = row + 1, col + 1  
             while k >= len(Matrix) and l < len(Matrix[0]):
+               # if Matrix[k][l].direction =='O':
+                #    AdjList[Matrix[k][l].index].append(-1)
                 if Matrix[k][l].color is not Matrix[row][col].color:
                     AdjList[Matrix[row][col].index].append(Matrix[k][l].index)
                 k += 1
                 l += 1
-
-
-
-
-
 print(AdjList)
-
-
-
